@@ -74,35 +74,38 @@ Future<void> stopRecording() async {
   });
 }
 
-@override
-void initState() {
-  super.initState();
+  @override
+  void initState() {
+    super.initState();
 
+    // 1. ดักฟังสถานะ Play / Pause
     _audioplayer.onPlayerStateChanged.listen((state) {
-    setState(() {
-      isPlaying = (state == PlayerState.playing);
+      setState(() {
+        isPlaying = (state == PlayerState.playing);
+      });
     });
 
+    // 2. ดักฟังความยาวรวม (แยกออกมาอยู่นอกสุด)
     _audioplayer.onDurationChanged.listen((newDuration) {
       setState(() {
         _duration = newDuration;
       });
     });
 
-    _audioplayer.onPositionChanged.listen((newPosition){
+    // 3. ดักฟังเวลาที่เล่นอยู่ realtime (แยกออกมาอยู่นอกสุด)
+    _audioplayer.onPositionChanged.listen((newPosition) {
       setState(() {
         _position = newPosition;
       });
     });
 
-    _audioplayer.onPlayerComplete.listen((_){
+    // 4. ดักฟังเมื่อเล่นจบ (แยกออกมาอยู่นอกสุด)
+    _audioplayer.onPlayerComplete.listen((_) {
       setState(() {
         _position = Duration.zero;
       });
     });
-
-  });
-}
+  }
 
   Future<void> playAudio() async {
     if (_audioPath == null) return; // ถ้ายังไม่มีไฟล์ ให้ข้ามไป
@@ -137,8 +140,8 @@ void initState() {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: Icon(_isRecording ? Icons.stop : Icons.mic),
-            iconSize: 36.0, // Adjust size
+            icon: Icon(Icons.mic),
+            iconSize: 42.0, // Adjust size
             color: _isRecording ? Colors.red : const Color.fromARGB(255, 121, 2, 145), // Adjust color
             onPressed: () {
               if(_isRecording == false){
@@ -149,17 +152,17 @@ void initState() {
               }
             },
           ),
-          
+          SizedBox(height: 50),
+
           if(_audioPath != null)
             IconButton(
               icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
               iconSize: 36.0,
-              color: const Color.fromARGB(255, 121, 2, 145),
+              color: const Color.fromARGB(255, 35, 88, 235),
               onPressed: (){
                 playAudio();
-              })
-
-              ,Padding(
+              }),
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   children: [
